@@ -76,12 +76,12 @@ export default function Pricing() {
         return;
       }
 
-      if (!data || !data.session?.url) {
+      if (!data || !data.url) {
         toast.error("Invalid response from server");
         return;
       }
-
-      router.push(data.session.url);
+      
+      router.push(data.url);
     } catch (e) {
       console.error("Checkout failed:", e);
       toast.error("Checkout failed. Please try again later.");

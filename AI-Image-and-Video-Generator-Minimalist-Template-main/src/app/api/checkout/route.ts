@@ -1,30 +1,32 @@
-import Stripe from "stripe";
+/// <reference types="node" />
 import { getUserByUuidAndEmail } from "@/backend/service/user";
-
 import { getSubscriptionPlan } from "@/backend/service/subscription_plan";
 import { UserSubscriptionStatusEnum } from "@/backend/type/enum/user_subscription_enum";
 import { PaymentStatus } from "@/backend/type/enum/payment_status_enum";
 import { PaymentHistory } from "@/backend/type/type";
 import { createPaymentHistory } from "@/backend/service/payment_history";
 import { getUserSubscriptionByUserIdAndStatus } from "@/backend/service/user_subscription";
-export const maxDuration = 60; // Changed from 120 to 60 to comply with Vercel's hobby plan limits
+
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
     const { plan_id, amount, interval, user_uuid, user_email } =
       await req.json();
+
     if (user_uuid === undefined || user_email === undefined) {
       return Response.json({ error: "invalid params" }, { status: 401 });
     }
+
     if (!plan_id || !amount || !interval) {
       return Response.json({ error: "invalid params" }, { status: 400 });
     }
-    // check user
+
     const user = await getUserByUuidAndEmail(user_uuid, user_email);
     if (!user || user.uuid !== user_uuid) {
       return Response.json({ error: "user not found" }, { status: 401 });
     }
-    // check subscription plan
+
     const subscriptionPlan = await getSubscriptionPlan(plan_id);
 
     if (
@@ -39,7 +41,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // check user subscription
     if (plan_id !== 1 && plan_id !== 8 && plan_id !== 9) {
       const userSubscriptions = await getUserSubscriptionByUserIdAndStatus(
         user.uuid,
@@ -48,35 +49,22 @@ export async function POST(req: Request) {
           UserSubscriptionStatusEnum.CANCELLED,
         ]
       );
+
       if (userSubscriptions.length > 0) {
         return Response.json(
-          { error: "You already has an active subscription" },
-          { status: 500 }
+          { error: "You already have an active subscription" },
+          { status: 409 }
         );
       }
     }
 
-    // Determine if this is a one-time payment or subscription
     const isOneTimePayment = plan_id === 1 || plan_id === 9 || plan_id === 11;
-
-    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "");
-    const price = await stripe.prices.retrieve(
-      subscriptionPlan.stripe_price_id
-    );
-
-    // Only check recurring requirement for subscription plans
-    if (!isOneTimePayment && !price.recurring) {
-      return Response.json(
-        { error: "price must be recurring type" },
-        { status: 400 }
-      );
-    }
 
     const createPaymentHistoryRequest: PaymentHistory = {
       id: 0,
       user_id: user.uuid,
       subscription_plans_id: plan_id,
-      stripe_price_id: subscriptionPlan.stripe_price_id,
+      stripe_price_id: subscriptionPlan.stripe_price_id || "",
       stripe_subscription_id: "",
       stripe_customer_id: "",
       stripe_payment_intent_id: "",
@@ -89,6 +77,7 @@ export async function POST(req: Request) {
     const paymentHistory = await createPaymentHistory(
       createPaymentHistoryRequest
     );
+
     if (!paymentHistory || paymentHistory.id === 0) {
       return Response.json(
         { error: "create payment history failed" },
@@ -96,50 +85,104 @@ export async function POST(req: Request) {
       );
     }
 
-    let options: Stripe.Checkout.SessionCreateParams = {
-      client_reference_id: String(user.id),
-      customer_email: user.email,
-      line_items: [
-        {
-          price: subscriptionPlan.stripe_price_id,
-          quantity: 1,
-        },
-      ],
-      mode: isOneTimePayment ? "payment" : "subscription",
-      payment_method_types: ["card"],
+    const creemApiKey = process.env["CREEM_API_KEY"];
+    const webBaseUrl = process.env["WEB_BASE_URI"];
+
+    if (!creemApiKey) {
+      return Response.json(
+        { error: "CREEM_API_KEY is not configured" },
+        { status: 500 }
+      );
+    }
+
+    if (!webBaseUrl) {
+      return Response.json(
+        { error: "WEB_BASE_URI is not configured" },
+        { status: 500 }
+      );
+    }
+
+    const creemProductId = "prod_4DQrUCcvmkMZADxupHDaxV";
+
+    if (!creemProductId) {
+      return Response.json(
+        { error: "Creem product id not found in subscription plan" },
+        { status: 500 }
+      );
+    }
+
+    const creemPayload = {
+      product_id: creemProductId,
+      request_id: String(paymentHistory.id),
+      success_url: `${webBaseUrl}`,
+      cancel_url: `${webBaseUrl}/pricing`,
+      customer: {
+        email: user.email,
+      },
       metadata: {
         project: "ai-video-generator",
-        interval: interval,
+        interval: String(interval),
         userId: String(user.uuid),
-        priceId: subscriptionPlan.stripe_price_id,
-        quantity: 1,
         paymentHistoryId: String(paymentHistory.id),
-        credit: subscriptionPlan.credit_per_interval,
+        credit: String(subscriptionPlan.credit_per_interval ?? 0),
         subscriptionPlanId: String(plan_id),
+        isOneTimePayment: String(isOneTimePayment),
       },
-      // Only include subscription_data if it's not a one-time payment
-      ...(isOneTimePayment
-        ? {}
-        : {
-            subscription_data: {
-              metadata: {
-                project: "ai-video-generator",
-                userId: String(user.uuid),
-                quantity: 1,
-                priceId: subscriptionPlan.stripe_price_id,
-                paymentHistoryId: String(paymentHistory.id),
-                credit: subscriptionPlan.credit_per_interval,
-                subscriptionPlanId: String(plan_id),
-                interval: interval,
-              },
-            },
-          }),
-      success_url: `${process.env.WEB_BASE_URI}`,
-      cancel_url: `${process.env.WEB_BASE_URI}/pricing`,
     };
-    const session = await stripe.checkout.sessions.create(options);
-    return Response.json({ session });
+
+    const creemResponse = await fetch("https://api.creem.io/v1/checkouts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${creemApiKey}`,
+      },
+      body: JSON.stringify(creemPayload),
+    });
+
+    const creemText = await creemResponse.text();
+
+    let creemData: any = null;
+    try {
+      creemData = creemText ? JSON.parse(creemText) : null;
+    } catch {
+      creemData = { raw: creemText };
+    }
+
+    if (!creemResponse.ok) {
+      console.error("creem checkout failed:", creemData);
+      return Response.json(
+        {
+          error: "create creem checkout failed",
+          details: creemData,
+        },
+        { status: 500 }
+      );
+    }
+
+    const checkoutUrl =
+      creemData?.url ||
+      creemData?.checkout_url ||
+      creemData?.hosted_checkout_url ||
+      creemData?.data?.url ||
+      creemData?.data?.checkout_url;
+
+    if (!checkoutUrl) {
+      console.error("creem checkout url missing:", creemData);
+      return Response.json(
+        {
+          error: "creem checkout url missing",
+          details: creemData,
+        },
+        { status: 500 }
+      );
+    }
+
+    return Response.json({
+      url: checkoutUrl,
+      paymentHistoryId: paymentHistory.id,
+    });
   } catch (e) {
-    console.log("checkout failed: ", e);
+    console.error("checkout failed:", e);
+    return Response.json({ error: "checkout failed" }, { status: 500 });
   }
 }

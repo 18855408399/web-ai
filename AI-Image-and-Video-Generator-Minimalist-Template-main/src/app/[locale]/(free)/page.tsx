@@ -47,7 +47,7 @@ export default function Home({
   return (
     <main className="flex flex-col items-center rounded-2xl px-3 md:rounded-3xl md:px-0">
       <div className="py-10 ">
-        <TopHero multiLanguage={multiLanguage} locale={locale} />
+      <TopHero />
       </div>
       <div className="w-full flex justify-center items-center pt-3 mb-8">
         <WorkerWrapper

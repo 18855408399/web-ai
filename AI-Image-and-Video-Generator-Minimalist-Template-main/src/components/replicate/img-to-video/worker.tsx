@@ -12,6 +12,8 @@ import { handleApiErrors } from "@/components/replicate/common-logic/response";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import CreditInfo from "@/components/landingpage/credit-info";
+import { Plus, ArrowRight, Download } from "lucide-react";
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function Worker(props: {
@@ -43,18 +45,15 @@ export default function Worker(props: {
 
   const fetchUserSubscriptionInfo = async () => {
     if (!user?.uuid) return;
-    const userSubscriptionInfo = await fetch(
-      "/api/user/get_user_subscription_info",
-      {
-        method: "POST",
-        body: JSON.stringify({ user_id: user.uuid }),
-      }
-    ).then((res) => {
+    const info = await fetch("/api/user/get_user_subscription_info", {
+      method: "POST",
+      body: JSON.stringify({ user_id: user.uuid }),
+    }).then((res) => {
       if (!res.ok) throw new Error("Failed to fetch user subscription info");
       return res.json();
     });
-    setUserSubscriptionInfo(userSubscriptionInfo);
-    setIsSubscribed(userSubscriptionInfo.subscription_status === "active");
+    setUserSubscriptionInfo(info);
+    setIsSubscribed(info.subscription_status === "active");
   };
 
   const convertImageToFile = async (): Promise<File | null> => {
@@ -66,8 +65,8 @@ export default function Worker(props: {
       const response = await fetch(image);
       const blob = await response.blob();
       return new File([blob], "input.jpg", { type: "image/jpeg" });
-    } catch (error) {
-      console.error("Error converting image:", error);
+    } catch (err) {
+      console.error("Error converting image:", err);
       return null;
     }
   };
@@ -91,12 +90,10 @@ export default function Worker(props: {
       return;
     }
 
-    // step1: create prediction
     try {
       setGenerating(true);
       setError(null);
 
-      // Convert image to file
       const imageFile = await convertImageToFile();
       if (!imageFile) {
         setGenerating(false);
@@ -122,7 +119,6 @@ export default function Worker(props: {
         body: formData,
       });
 
-      // Read response.json() only once and store result
       newPrediction = await response.json();
       const canContinue = await handleApiErrors({
         response,
@@ -134,14 +130,13 @@ export default function Worker(props: {
         return;
       }
       setPrediction(newPrediction);
-    } catch (error) {
-      console.error("Error occurred, please try again", error);
+    } catch (err) {
+      console.error("Error occurred, please try again", err);
       toast.error("An error occurred, please try again");
       setGenerating(false);
       return;
     }
 
-    // step2: wait for prediction to be succeeded or failed
     while (
       newPrediction.status !== "succeeded" &&
       newPrediction.status !== "failed"
@@ -156,23 +151,20 @@ export default function Worker(props: {
       setPrediction(newPrediction);
     }
 
-    // update effect result
     const runningTime =
       (newPrediction.created_at
         ? new Date().getTime() - new Date(newPrediction.created_at).getTime()
         : -1) / 1000;
     fetch("/api/effect_result/update", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         original_id: newPrediction.id,
         status: newPrediction.status,
         running_time: runningTime,
         updated_at: new Date(),
-        original_image_url: "", // : webhook will update this
-        object_key: newPrediction.id, // : webhook will update this
+        original_image_url: "",
+        object_key: newPrediction.id,
       }),
     });
     await sleep(4000);
@@ -196,83 +188,66 @@ export default function Worker(props: {
   };
 
   return (
-    <>
-      <div
-        className="container mx-auto flex flex-col md:flex-row my-4 px-4 py-8 border-1 border-blue-200 rounded-lg shadow-lg shadow-blue-200 bg-white"
-        style={{
-          boxShadow:
-            "0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1)",
-        }}
-      >
-        <div className="w-full md:w-1/2 md:px-6 md:border-r border-divider border-default-300">
-          {/* Upload Controls */}
-          <div className="">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-800">
-                {t("input.title")}
-              </h2>
-              <CreditInfo
-                credit={userSubscriptionInfo?.remain_count?.toString() || ""}
-              />
-            </div>
+    <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-4 sm:p-6 shadow-2xl">
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* ─── LEFT: Input Area ─── */}
+        <div className="w-full md:w-1/2 flex flex-col gap-4">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-white">{t("input.title")}</h2>
+            <CreditInfo
+              credit={userSubscriptionInfo?.remain_count?.toString() || ""}
+            />
+          </div>
 
-            {/* Single Image Upload */}
-            <div>
-              <label className="relative flex flex-col items-center justify-center h-64 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-100 transition duration-300">
-                {image ? (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={image}
-                      alt="Uploaded"
-                      className="h-full w-full object-contain rounded-lg"
-                    />
-                    <DeleteButton onClick={handleDeleteImage} />
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center p-4">
-                    <svg
-                      className="w-12 h-12 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                    <span className="mt-2 text-sm text-gray-500">
-                      {t("input.upload-tips")}
-                    </span>
-                  </div>
-                )}
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={handleImageUpload}
-                  accept="image/*"
+          {/* Upload Area */}
+          <label className="relative flex flex-col items-center justify-center h-52 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl cursor-pointer hover:bg-white/10 transition-colors">
+            {image ? (
+              <div className="relative w-full h-full">
+                <img
+                  src={image}
+                  alt="Uploaded"
+                  className="h-full w-full object-contain rounded-xl"
                 />
-              </label>
-            </div>
+                <DeleteButton
+                  onClick={handleDeleteImage}
+                  className="absolute top-2 right-2"
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center p-4">
+                <Plus className="w-10 h-10 text-white/30 mb-2" />
+                <span className="text-sm text-white/50">
+                  {t("input.upload-tips")}
+                </span>
+              </div>
+            )}
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleImageUpload}
+              accept="image/*"
+            />
+          </label>
 
-            {/* Prompt Input */}
-            <div className="mt-6">
-              <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-                placeholder={t("input.promptTips")}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                rows={3}
-              />
-            </div>
+          {/* Prompt */}
+          <textarea
+            className="w-full p-3 bg-white/5 border border-white/15 rounded-xl text-white placeholder-white/40 resize-none outline-none focus:border-white/30 transition-colors text-sm"
+            placeholder={t("input.promptTips")}
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            rows={3}
+          />
 
-            {/* Generate Button */}
+          {/* Generate Button */}
+          <div className="flex items-center justify-between border-t border-white/10 pt-4">
+            <span className="text-xs text-white/50">
+              Cost: {props.credit} Credits
+            </span>
             {generating ? (
               <Button
                 isLoading
-                className="w-full mt-4 bg-blue-600 text-white hover:bg-blue-700 transition duration-200"
+                className="bg-white/20 text-white rounded-xl px-6"
               >
                 {prediction
                   ? prediction.status === "succeeded"
@@ -281,35 +256,34 @@ export default function Worker(props: {
                   : "Processing..."}
               </Button>
             ) : (
-              <Button
-                className="w-full mt-4 bg-blue-600 text-white hover:bg-blue-700 transition duration-200"
+              <button
+                className="bg-white text-black px-6 py-2.5 rounded-xl flex items-center gap-2 hover:scale-105 transition-transform text-sm font-bold shadow-lg"
                 onClick={handleGenerate}
               >
-                {t("input.createButton")} ( credit: {props.credit} )
-              </Button>
+                {t("input.createButton")} <ArrowRight className="w-4 h-4" />
+              </button>
             )}
           </div>
         </div>
 
-        {/* output */}
-        <div className="flex w-full md:w-1/2 px-4 mt-8 md:mt-0">
+        {/* ─── RIGHT: Output Area ─── */}
+        <div className="w-full md:w-1/2 flex items-center justify-center min-h-52">
           {error && (
-            <div className="flex justify-center items-center text-red-500">
-              {error}
-            </div>
+            <div className="text-red-400 text-center text-sm">{error}</div>
           )}
+
           {prediction ? (
             <>
               {prediction.output ? (
-                <div className="flex justify-center items-center relative group rounded-lg">
+                <div className="relative group rounded-2xl overflow-hidden w-full">
                   <video
                     src={prediction.output}
-                    className="flex justify-center items-center w-auto h-auto rounded-lg"
+                    className="w-full h-auto rounded-2xl"
                     controls
                   />
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      className="bg-black text-white"
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-2xl">
+                    <button
+                      className="bg-white/90 text-black px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2"
                       onClick={() => {
                         const link = document.createElement("a");
                         link.href = prediction.output || "";
@@ -318,33 +292,32 @@ export default function Worker(props: {
                         link.click();
                       }}
                     >
+                      <Download className="w-4 h-4" />
                       {t("output.downloadButton")}
-                    </Button>
+                    </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-full w-full bg-gray-200 border-2 border-dashed animate-pulse rounded-lg">
+                <div className="flex flex-col items-center justify-center h-full w-full bg-white/5 border border-white/10 rounded-2xl py-16">
                   <CircularProgress
-                    color="primary"
+                    color="default"
                     aria-label="Loading..."
-                    classNames={{
-                      svg: "text-indigo-600",
-                    }}
+                    classNames={{ svg: "text-white" }}
                   />
-                  <span className="text-indigo-600 font-semibold mb-2">
+                  <span className="text-white/70 font-medium mt-4 text-sm">
                     {prediction.status}
                   </span>
-                  <span className="text-indigo-600 font-semibold">
-                    please wait for about two to three minutes.
+                  <span className="text-white/40 text-xs mt-1">
+                    Please wait 2-3 minutes...
                   </span>
                 </div>
               )}
             </>
           ) : (
-            <div className="hidden md:flex items-center md:px-4 justify-center w-full h-full border-2 border-dashed  rounded-lg">
+            <div className="flex items-center justify-center w-full h-full bg-white/5 border border-dashed border-white/10 rounded-2xl overflow-hidden">
               <video
                 src={props.promotion}
-                className="flex justify-center items-center w-auto h-full rounded-lg"
+                className="w-full h-auto rounded-2xl"
                 loop
                 autoPlay
                 muted
@@ -354,6 +327,6 @@ export default function Worker(props: {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

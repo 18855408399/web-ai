@@ -2,14 +2,10 @@ import WorkerWrapper from "@/components/replicate/img-to-video/worker-wraper";
 import { getMetadata } from "@/components/seo/seo";
 import FaqClient from "@/components/landingpage/faq-client";
 import {
+  Video,
+  Image as ImageIcon,
+  Layers,
   Sparkles,
-  Play,
-  Wand2,
-  Palette,
-  Download,
-  Share2,
-  Shield,
-  Zap,
 } from "lucide-react";
 
 export async function generateMetadata({
@@ -29,239 +25,102 @@ export default function Home({
   const effectId = "1";
   const multiLanguageOfGenerator = "HomePage.generator";
 
-  const examples = [
-    { img: "/resources/example1.webp" },
-    { img: "/resources/example2.webp" },
-    { img: "/resources/example5.webp" },
-  ];
-
   const features = [
     {
-      icon: Wand2,
-      title: "Realistic AI Animation",
-      desc: "Turn static photos into vibrant video scenes that feel alive.",
+      icon: <Video className="w-6 h-6" />,
+      title: "Text to Video",
+      desc: "Transform detailed descriptions into cinematic scenes with automatic camera work and lighting.",
     },
     {
-      icon: Palette,
-      title: "Prompt-Based Personalization",
-      desc: "Write your scene, style, or emotion — our AI interprets and animates it.",
+      icon: <ImageIcon className="w-6 h-6" />,
+      title: "Image to Video",
+      desc: "Bring static images to life with natural motion, transitions, and narrative continuity.",
     },
     {
-      icon: Download,
-      title: "High-Resolution Exports",
-      desc: "Download full-quality videos ready to post, share, or keep forever.",
+      icon: <Layers className="w-6 h-6" />,
+      title: "Multi-Shot Storytelling",
+      desc: "Single prompt generates coordinated multi-camera sequences with professional transitions.",
     },
     {
-      icon: Zap,
-      title: "Intuitive Creation Process",
-      desc: "No timeline, no tools — just you and your creativity.",
+      icon: <Sparkles className="w-6 h-6" />,
+      title: "Reference Video",
+      desc: "Upload reference clips to maintain consistent characters, voices, and styles across your project.",
+    },
+  ];
+
+  const steps = [
+    {
+      num: "01",
+      title: "Write What You Imagine",
+      desc: "Enter a detailed text description, upload an image, or provide a video reference.",
     },
     {
-      icon: Share2,
-      title: "Instant Sharing",
-      desc: "Easily download or share your videos across all platforms.",
+      num: "02",
+      title: "Fine-Tune Your Creation",
+      desc: "Adjust video length, aspect ratio, resolution, and generation style.",
     },
     {
-      icon: Shield,
-      title: "Privacy & Data Protection",
-      desc: "We safeguard your content with industry-standard security.",
+      num: "03",
+      title: "Your Video, Ready",
+      desc: "Click generate and return to a fully-produced video with professional quality.",
     },
   ];
 
   return (
-    <main className="flex flex-col items-center w-full bg-zinc-950">
-
-      {/* ───────────────────── HERO ───────────────────── */}
-      <section className="relative w-full flex flex-col overflow-hidden">
-        {/* 背景 */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=3540&auto=format&fit=crop"
-            alt="Hero Background"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-black/55" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-zinc-950" />
-        </div>
-
-        {/* 文字 */}
-        <div className="relative z-10 flex flex-col items-center justify-center pt-24 pb-10 px-4 text-center">
+    <main className="flex flex-col items-center w-full">
+      {/* ─── HERO + AI Generation ─── */}
+      <section className="relative pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 flex flex-col items-center justify-center min-h-screen w-full">
+        <div className="max-w-5xl mx-auto w-full flex flex-col items-center text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium mb-8">
             <Sparkles className="w-3 h-3 text-yellow-300" />
             Powered by Next-Gen AI Models
           </div>
-
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-none mb-6 tracking-tighter drop-shadow-2xl">
-            Imagine it.
-            <br />
-            <span className="text-white/50">Generate it.</span>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white tracking-tight mb-6 drop-shadow-lg leading-tight">
+            Your One-Stop AI Image &{" "}
+            <br className="hidden md:block" /> Video Creation Platform
           </h1>
-
-          <p className="text-lg md:text-xl text-zinc-300 max-w-2xl mb-10 font-light leading-relaxed">
-            Turn your images into cinematic AI videos in seconds.
-            <br className="hidden md:block" />
-            No skills needed — just upload and generate.
+          <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-light drop-shadow-md px-4">
+            No camera. No crew. Just describe your vision and let AIO bring it
+            to life with stunning quality in seconds.
           </p>
         </div>
 
-        {/* WorkerWrapper 玻璃卡片 */}
-        <div className="relative z-10 w-full flex justify-center px-4 pb-32">
+        <div className="w-full flex justify-center px-2 sm:px-4">
           <div className="w-full max-w-4xl">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-white/20 via-white/10 to-white/5 rounded-[2rem] blur-lg opacity-40" />
-              <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-4 md:p-6 shadow-2xl">
-                <WorkerWrapper
-                  effectId={effectId}
-                  promotion={video}
-                  lang={multiLanguageOfGenerator}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────── EXAMPLES ───────────────────── */}
-      <section className="w-full bg-zinc-950 py-28 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-zinc-500 text-sm uppercase tracking-widest mb-3">
-              Showcase
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              Real Videos from Real Users
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {examples.map((item, i) => (
-              <div
-                key={i}
-                className="group relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-300"
-              >
-                <img
-                  src={item.img}
-                  alt={`Example ${i + 1}`}
-                  className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
-                    <Play className="w-5 h-5 text-white ml-1" fill="white" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────── WHAT ───────────────────── */}
-      <section className="w-full bg-zinc-900 py-28 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          <div>
-            <p className="text-zinc-500 text-sm uppercase tracking-widest mb-4">
-              About
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              What Is AI Video Generator?
-            </h2>
-            <p className="text-zinc-400 text-lg leading-relaxed mb-8">
-              An AI-powered platform that transforms still images or text
-              prompts into animated, emotionally rich videos.
-            </p>
-            <ul className="space-y-4">
-              {[
-                "Emotion-Driven Animation — infuse life into your photos",
-                "Cinematic Quality Output — professional-grade results",
-                "Multiple Style Options — romantic, surreal, action & more",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-zinc-300">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-2xl overflow-hidden border border-zinc-700 shadow-2xl">
-            <img
-              src="/resources/example3.webp"
-              alt="AI Video Generator preview"
-              className="w-full object-cover"
+            <WorkerWrapper
+              effectId={effectId}
+              promotion={video}
+              lang={multiLanguageOfGenerator}
             />
           </div>
         </div>
       </section>
 
-      {/* ───────────────────── HOW ───────────────────── */}
-      <section className="w-full bg-zinc-950 py-28 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-zinc-500 text-sm uppercase tracking-widest mb-3">
-              Process
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              How to Create Your First Video
+      {/* ─── FEATURES ─── */}
+      <section className="py-16 md:py-24 px-4 sm:px-6 w-full">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+              Everything You Need to Create
             </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                step: "01",
-                title: "Upload Your Image",
-                desc: "Choose a clear, well-lit photo or enter a text prompt to get started.",
-              },
-              {
-                step: "02",
-                title: "Choose Your Style",
-                desc: "Describe the mood — romantic, cinematic, surreal. The AI understands.",
-              },
-              {
-                step: "03",
-                title: "Generate & Download",
-                desc: "Let the AI animate your story into a stunning video in seconds.",
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-zinc-600 transition-all duration-300"
-              >
-                <div className="text-6xl font-bold text-zinc-800 mb-4">
-                  {item.step}
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-zinc-400 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────── FEATURES ───────────────────── */}
-      <section className="w-full bg-zinc-900 py-28 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-zinc-500 text-sm uppercase tracking-widest mb-3">
-              Features
+            <p className="text-white/70 text-base md:text-lg max-w-2xl mx-auto">
+              Four powerful generation modes. Infinite creative possibilities.
             </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              Powerful Features to Fuel Your Creativity
-            </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map((item) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+            {features.map((f, i) => (
               <div
-                key={item.title}
-                className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 hover:border-zinc-600 transition-all duration-300 group"
+                key={i}
+                className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 md:p-8 rounded-3xl hover:bg-white/20 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-zinc-800 group-hover:bg-zinc-700 flex items-center justify-center mb-4 transition-colors">
-                  <item.icon className="w-5 h-5 text-zinc-300" />
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white mb-4 md:mb-6">
+                  {f.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  {item.title}
+                <h3 className="text-xl md:text-2xl font-semibold text-white mb-2 md:mb-3">
+                  {f.title}
                 </h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  {item.desc}
+                <p className="text-white/70 text-sm md:text-base leading-relaxed">
+                  {f.desc}
                 </p>
               </div>
             ))}
@@ -269,14 +128,43 @@ export default function Home({
         </div>
       </section>
 
-      {/* ───────────────────── FAQ ───────────────────── */}
-      <section className="w-full bg-zinc-950 py-28 px-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-zinc-500 text-sm uppercase tracking-widest mb-3">
-              Support
+      {/* ─── HOW IT WORKS ─── */}
+      <section className="py-16 md:py-24 px-4 sm:px-6 w-full">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+              Three Steps to Stunning Videos
+            </h2>
+            <p className="text-white/70 text-base md:text-lg">
+              No learning curve. No software to install.
             </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {steps.map((step, i) => (
+              <div
+                key={i}
+                className="relative p-6 md:p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden"
+              >
+                <div className="text-6xl md:text-7xl font-black text-white/5 absolute top-2 right-4 select-none">
+                  {step.num}
+                </div>
+                <h3 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 relative z-10 mt-6 md:mt-8">
+                  {step.title}
+                </h3>
+                <p className="text-white/60 text-sm md:text-base relative z-10">
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section className="py-16 md:py-24 px-4 sm:px-6 w-full">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10 md:mb-12">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
               Frequently Asked Questions
             </h2>
           </div>
@@ -284,25 +172,24 @@ export default function Home({
         </div>
       </section>
 
-      {/* ───────────────────── CTA ───────────────────── */}
-      <section className="w-full bg-zinc-900 py-28 px-4">
+      {/* ─── CTA ─── */}
+      <section className="py-16 md:py-24 px-4 sm:px-6 w-full">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-md">
             Turn Your Moments into Moving Stories
           </h2>
-          <p className="text-zinc-400 text-lg mb-12 leading-relaxed">
-            AI Video Generator helps you transform everyday moments into
-            cinematic animations using the power of artificial intelligence.
+          <p className="text-white/70 text-lg mb-12 leading-relaxed">
+            Transform everyday moments into cinematic animations using the power
+            of artificial intelligence.
           </p>
           <a
-            href="#"
-            className="inline-flex items-center gap-2 px-10 py-4 bg-white text-zinc-900 font-semibold rounded-full hover:bg-zinc-100 transition-colors text-lg shadow-2xl"
+            href={`/${locale}/pricing`}
+            className="inline-flex items-center gap-2 px-10 py-4 bg-white text-black font-semibold rounded-full hover:bg-white/90 transition-colors text-lg shadow-2xl"
           >
-            Create Your First Video Now →
+            Start Creating Now →
           </a>
         </div>
       </section>
-
     </main>
   );
 }

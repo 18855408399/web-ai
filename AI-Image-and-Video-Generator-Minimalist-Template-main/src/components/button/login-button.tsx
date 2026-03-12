@@ -1,17 +1,14 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
 
-export default function () {
-  const t = useTranslations("Nav");
+export default function LoginButton() {
   return (
-    <Button
-      className="capitalize text-black rounded-full"
+    <button
+      className="bg-white/90 backdrop-blur-md text-black px-5 py-2 rounded-full text-sm font-semibold hover:bg-white transition-colors shadow-lg"
       onClick={() => signIn("google")}
     >
-      {t("login")}
-    </Button>
+      Sign In
+    </button>
   );
 }

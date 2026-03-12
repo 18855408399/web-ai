@@ -11,15 +11,14 @@ export default async function LocaleLayout({
 }) {
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-white/30 relative overflow-hidden">
-      {/* Cinematic Background */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1505533054827-1cb0ce115393?q=80&w=2070&auto=format&fit=crop')",
+            "url('https://images.unsplash.com/photo-1433086966358-54859d0ed716?q=80&w=2560&auto=format&fit=crop')",
         }}
       >
-        <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[1px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/80"></div>
       </div>
 
       <Navbar />

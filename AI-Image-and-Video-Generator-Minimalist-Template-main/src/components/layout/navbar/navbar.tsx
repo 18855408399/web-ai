@@ -29,29 +29,31 @@ export default function Navbar() {
   }, [session, setUser]);
 
   const navLinks = [
-    { label: "Home", href: `/${locale}` },
-    { label: "Text to Image", href: `/${locale}/text-to-image` },
-    { label: "Pricing", href: `/${locale}/pricing` },
+    { label: "Features", href: `/${locale}#features` },
+    { label: "How it Works", href: `/${locale}#how-it-works` },
+    { label: "Pricing", href: `/${locale}#pricing` },
+    { label: "FAQ", href: `/${locale}#faq` },
   ];
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled || isMobileMenuOpen
-          ? "bg-black/40 backdrop-blur-xl border-b border-white/10"
+          ? "bg-black/60 backdrop-blur-xl border-b border-white/10"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a href={`/${locale}`} className="flex items-center gap-1">
+        <a
+          href={`/${locale}`}
+          className="flex items-center gap-1 cursor-pointer"
+        >
           <div className="text-2xl font-black tracking-tighter text-white drop-shadow-md">
             A<span className="text-white/70">I</span>O
           </div>
         </a>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80 tracking-wide">
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/90 tracking-wide">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -71,12 +73,16 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Desktop Auth */}
         <div className="hidden md:flex items-center gap-4">
-          {user ? <UserButton /> : <LoginButton />}
+          {user ? (
+            <UserButton />
+          ) : (
+            <>
+              <LoginButton />
+            </>
+          )}
         </div>
 
-        {/* Mobile Toggle */}
         <button
           className="md:hidden text-white p-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -89,14 +95,13 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-black/60 backdrop-blur-2xl border-b border-white/10 overflow-hidden"
+            className="md:hidden bg-black/80 backdrop-blur-2xl border-b border-white/10 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 flex flex-col gap-4">
               {navLinks.map((link) => (

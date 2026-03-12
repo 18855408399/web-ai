@@ -8,7 +8,13 @@ import {
   Plus, Loader2, X, ArrowRight
 } from 'lucide-react';
 
-export default function TopLanding() {
+// 定义传入的 Props 类型，解决 page.tsx 里的红线报错
+interface TopHeroProps {
+  multiLanguage?: string;
+  Locale?: string;
+}
+
+export default function TopHero({ multiLanguage, Locale }: TopHeroProps) {
   // --- 业务状态管理 ---
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [credits, setCredits] = useState(0); 
@@ -74,7 +80,7 @@ export default function TopLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans selection:bg-zinc-200">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 font-sans selection:bg-zinc-200 w-full">
       
       {/* Hero Section */}
       <div className="relative min-h-screen flex flex-col overflow-hidden bg-zinc-900">

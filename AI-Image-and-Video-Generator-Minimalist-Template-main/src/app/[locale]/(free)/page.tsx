@@ -7,6 +7,7 @@ import {
   Image as ImageIcon,
   Layers,
   Sparkles,
+  Clock,
 } from "lucide-react";
 
 export async function generateMetadata({
@@ -22,67 +23,68 @@ export default function Home({
 }: {
   params: { locale: string };
 }) {
-  const video = "/resources/example3.webm";
-  const effectId = "1";
+  const video     = "/resources/example3.webm";
+  const effectId  = "1";
   const multiLanguageOfGenerator = "HomePage.generator";
 
   const features = [
     {
       icon: <Video className="w-6 h-6" />,
-      title: "Text to Video",
-      desc: "Transform detailed descriptions into cinematic scenes with automatic camera work and lighting.",
+      title: "Image to Video (Kling v2.1)",
+      desc: "Upload any photo as the starting frame, describe the motion you want, and Kling v2.1 animates it into a smooth HD video.",
     },
     {
       icon: <ImageIcon className="w-6 h-6" />,
-      title: "Image to Video",
-      desc: "Bring static images to life with natural motion, transitions, and narrative continuity.",
+      title: "Text to Image (Flux 1.1 Pro)",
+      desc: "Enter a text prompt and Flux 1.1 Pro generates a high-quality 1024×1024 image. No source photo needed.",
     },
     {
       icon: <Layers className="w-6 h-6" />,
-      title: "Multi-Shot Storytelling",
-      desc: "Single prompt generates coordinated multi-camera sequences with professional transitions.",
+      title: "Flexible Aspect Ratios",
+      desc: "Choose 16:9 for landscape, 9:16 for vertical / short-form, or 1:1 for square — whichever fits your platform.",
     },
     {
-      icon: <Sparkles className="w-6 h-6" />,
-      title: "Reference Video",
-      desc: "Upload reference clips to maintain consistent characters, voices, and styles across your project.",
+      icon: <Clock className="w-6 h-6" />,
+      title: "5s or 10s Duration",
+      desc: "Generate a 5-second quick clip or a 10-second extended sequence. Select before generating.",
     },
   ];
 
   const steps = [
     {
       num: "01",
-      title: "Write What You Imagine",
-      desc: "Enter a detailed text description, upload an image, or provide a video reference. The more specific, the better.",
+      title: "Upload Your Start Image",
+      desc: "Choose a clear, well-lit photo as the first frame of your video. This is the required input for Kling v2.1.",
     },
     {
       num: "02",
-      title: "Fine-Tune Your Creation",
-      desc: "Adjust video length, aspect ratio, resolution, and generation style using our intuitive controls.",
+      title: "Describe the Motion",
+      desc: "Write a prompt describing what should happen: camera movements, character actions, lighting changes, or mood.",
     },
     {
       num: "03",
-      title: "Your Video, Ready",
-      desc: "Click generate, grab a coffee, and return to a fully-produced video with professional quality.",
+      title: "Pick Ratio & Duration, Then Generate",
+      desc: "Select your aspect ratio (16:9 / 9:16 / 1:1) and duration (5s or 10s), hit Generate, and your video will be ready in ~2–3 minutes.",
     },
   ];
 
   return (
     <main className="flex flex-col items-center w-full">
+
       {/* ─── HERO + AI Generation ─── */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 flex flex-col items-center justify-center min-h-screen w-full">
         <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col items-center text-center mb-8 sm:mb-12 mt-10 md:mt-0">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium mb-8">
             <Sparkles className="w-3 h-3 text-yellow-300" />
-            Powered by Next-Gen AI Models
+            Powered by Kling v2.1 &amp; Flux 1.1 Pro
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white tracking-tight mb-6 drop-shadow-2xl leading-tight">
-            Your One-Stop AI Image &{" "}
+            Your One-Stop AI Image &amp;{" "}
             <br className="hidden md:block" /> Video Creation Platform
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 md:mb-12 font-medium drop-shadow-md px-4">
-            No camera. No crew. Just describe your vision and let AIO bring it
-            to life with stunning quality in seconds.
+            Upload a photo, describe the motion, choose your format — and let
+            AI bring it to life in minutes. No editing skills needed.
           </p>
         </div>
 
@@ -102,10 +104,10 @@ export default function Home({
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
-              Everything You Need to Create
+              What You Can Create
             </h2>
             <p className="text-white/80 text-base md:text-lg max-w-2xl mx-auto">
-              Four powerful generation modes. Infinite creative possibilities.
+              Two AI generation tools. Fully functional. No extra setup required.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
@@ -134,11 +136,10 @@ export default function Home({
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
-              Three Steps to Stunning Videos
+              Three Steps to Your AI Video
             </h2>
             <p className="text-white/80 text-base md:text-lg">
-              No learning curve. No software to install. Just prompt and
-              generate.
+              No timeline editor. No software to install. Just upload, prompt, and generate.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -170,7 +171,7 @@ export default function Home({
               Choose Your Creative Plan
             </h2>
             <p className="text-white/80 text-base md:text-lg">
-              Start free. Scale as you grow. No hidden fees.
+              Start free with 20 credits. Scale as you grow. No hidden fees.
             </p>
           </div>
           <PricingSection />

@@ -1,6 +1,5 @@
 import { Button } from "@nextui-org/react";
 import { CircularProgress } from "@nextui-org/react";
-import { useTranslations } from "next-intl";
 
 export default function Output({
   error,
@@ -13,7 +12,6 @@ export default function Output({
   defaultImage: string;
   showImage: string | null;
 }) {
-  const t = useTranslations("PhotoToCartoon.generator");
   return (
     <div className="flex flex-col w-full md:w-1/2 px-4 mt-8 md:mt-0">
       {error && error !== "" && (
@@ -54,7 +52,7 @@ export default function Output({
                       link.click();
                     }}
                   >
-                    {t("output.downloadButton")}
+                    Download Image
                   </Button>
                 </div>
               </div>
@@ -63,9 +61,7 @@ export default function Output({
                 <CircularProgress
                   color="primary"
                   aria-label="Loading..."
-                  classNames={{
-                    svg: "text-black",
-                  }}
+                  classNames={{ svg: "text-black" }}
                 />
                 <span className="text-black font-semibold">
                   {prediction.status}

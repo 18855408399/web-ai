@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkCreditUsageByUserId, reducePeriodRemainCountByUserId } from "@/backend/service/credit_usage";
+import { checkCreditUsageByUserId } from "@/backend/service/credit_usage";
 import Replicate from "replicate";
 import { ResponseCodeEnum } from "@/backend/type/enum/response_code_enum";
 import { createEffectResult } from "@/backend/service/effect_result";
@@ -12,93 +12,102 @@ const replicate = new Replicate({
 const WEBHOOK_HOST = process.env.REPLICATE_URL;
 
 export async function POST(request: Request) {
-  if (!process.env.REPLICATE_API_TOKEN) {
-    throw new Error(
-      "The REPLICATE_API_TOKEN environment variable is not set. See README.md for instructions on how to set it."
-    );
-  }
+  try {
+    if (!process.env.REPLICATE_API_TOKEN) {
+      return NextResponse.json(
+        { detail: "REPLICATE_API_TOKEN is not set" },
+        { status: 500 }
+      );
+    }
 
-  const formData = await request.formData();
-  const prompt           = formData.get("prompt") as string;
-  const user_id          = formData.get("user_id") as string;
-  const model            = formData.get("model") as string;
-  const version          = formData.get("version") as string;
-  const user_email       = formData.get("user_email") as string;
-  const effect_link_name = formData.get("effect_link_name") as string;
-  const credit           = Number(formData.get("credit")) || 0;
+    const formData = await request.formData();
+    const prompt           = formData.get("prompt") as string;
+    const user_id          = formData.get("user_id") as string;
+    const model            = formData.get("model") as string;
+    const version          = formData.get("version") as string;
+    const user_email       = formData.get("user_email") as string;
+    const effect_link_name = formData.get("effect_link_name") as string;
+    const credit           = Number(formData.get("credit")) || 0;
 
-  if (!model && !version) {
+    if (!model && !version) {
+      return NextResponse.json(
+        { detail: "Either model or version must be specified" },
+        { status: 400 }
+      );
+    }
+
+    if (!user_id) {
+      return NextResponse.json(
+        { error: "Please login first" },
+        { status: ResponseCodeEnum.UNAUTHORIZED }
+      );
+    }
+
+    const user = await getUserByUuidAndEmail(user_id, user_email);
+    if (!user || user.uuid !== user_id) {
+      return NextResponse.json(
+        { error: "Please login first" },
+        { status: ResponseCodeEnum.UNAUTHORIZED }
+      );
+    }
+
+    const result = await checkCreditUsageByUserId(user_id, credit);
+    if (result !== 1) {
+      if (result === -1) {
+        return NextResponse.json(
+          { detail: "try again" },
+          { status: ResponseCodeEnum.CREDIT_NOT_INITED }
+        );
+      }
+      if (result === -2) {
+        return NextResponse.json(
+          { detail: "You are not subscribed or your credit is not enough, please purchase credits or subscribe." },
+          { status: ResponseCodeEnum.NONE_SUBSCRIBED }
+        );
+      }
+      if (result === -3) {
+        return NextResponse.json(
+          { detail: "Your current monthly credit usage is exceeded" },
+          { status: ResponseCodeEnum.FORBIDDEN }
+        );
+      }
+    }
+
+    const options = await createOptions(formData);
+    const prediction = await replicate.predictions.create(options as any);
+
+    if (prediction?.error) {
+      return NextResponse.json({ detail: prediction.error }, { status: 500 });
+    }
+
+    createEffectResult({
+      result_id:      genEffectResultId(),
+      user_id:        user_id,
+      original_id:    prediction.id,
+      effect_id:      0,
+      effect_name:    effect_link_name,
+      prompt:         prompt,
+      url:            "",
+      status:         "pending",
+      original_url:   "",
+      storage_type:   "R2",
+      running_time:   -1,
+      credit:         credit,
+      request_params: JSON.stringify(options),
+      created_at:     new Date(),
+    }).catch((error) => {
+      console.error("Failed to create effect result:", error);
+    });
+
+    return NextResponse.json(prediction, { status: 201 });
+
+  } catch (error: any) {
+    console.error("=== IMG TO VIDEO ERROR ===", error?.message || error);
     return NextResponse.json(
-      { detail: "Either model or version must be specified" },
-      { status: 400 }
+      { detail: error?.message || "Unknown error" },
+      { status: 500 }
     );
   }
-
-  if (user_id === undefined) {
-    return Response.json(
-      { error: "Please login first" },
-      { status: ResponseCodeEnum.UNAUTHORIZED }
-    );
-  }
-
-  const user = await getUserByUuidAndEmail(user_id, user_email);
-  if (!user || user.uuid !== user_id) {
-    return Response.json(
-      { error: "Please login first" },
-      { status: ResponseCodeEnum.UNAUTHORIZED }
-    );
-  }
-
-  const result = await checkCreditUsageByUserId(user_id, credit);
-  if (result !== 1) {
-    if (result === -1) {
-      return Response.json(
-        { detail: "try again" },
-        { status: ResponseCodeEnum.CREDIT_NOT_INITED }
-      );
-    }
-    if (result === -2) {
-      return Response.json(
-        { detail: "You are not subscribed or your credit is not enough, please purchase credits or subscribe." },
-        { status: ResponseCodeEnum.NONE_SUBSCRIBED }
-      );
-    }
-    if (result === -3) {
-      return Response.json(
-        { detail: "Your current monthly credit usage is exceeded" },
-        { status: ResponseCodeEnum.FORBIDDEN }
-      );
-    }
-  }
-
-  const options = await createOptions(formData);
-  const prediction = await replicate.predictions.create(options as any);
-
-  if (prediction?.error) {
-    return NextResponse.json({ detail: prediction.error }, { status: 500 });
-  }
-
-  const resultId = genEffectResultId();
-  createEffectResult({
-    result_id:      resultId,
-    user_id:        user_id,
-    original_id:    prediction.id,
-    effect_id:      0,
-    effect_name:    effect_link_name,
-    prompt:         prompt,
-    url:            "",
-    status:         "pending",
-    original_url:   "",
-    storage_type:   "R2",
-    running_time:   -1,
-    credit:         credit,
-    request_params: JSON.stringify(options),
-    created_at:     new Date(),
-  }).catch((error) => {
-    console.error("Failed to create effect result:", error);
-  });
-
-  return NextResponse.json(prediction, { status: 201 });
 }
 
 // ─── Build Replicate input based on effect type ───────────────────────────────
@@ -106,15 +115,13 @@ const createOptions = async (formData: FormData) => {
   const model        = formData.get("model") as string;
   const aspect_ratio = (formData.get("aspect_ratio") as string) || "16:9";
   const duration     = parseInt((formData.get("duration") as string) || "5", 10);
+  const effectName   = formData.get("effect_link_name") as string;
 
   let input: Record<string, unknown>;
 
-  const effectName = formData.get("effect_link_name") as string;
-
   if (effectName === "ai-dancing" || effectName === "kling-v12") {
-    // Kling v2.1: image-to-video — start_image is the first frame
-    const start_image   = formData.get("image");
-    const base64_image  = await imageToBase64(start_image as File);
+    const start_image  = formData.get("image");
+    const base64_image = await imageToBase64(start_image as File);
     input = {
       prompt:       formData.get("prompt") as string,
       start_image:  base64_image,
@@ -126,10 +133,10 @@ const createOptions = async (formData: FormData) => {
     if (first_frame_image) {
       const base64_image = await imageToBase64(first_frame_image as File);
       input = {
-        prompt:             formData.get("prompt") as string,
-        first_frame_image:  base64_image,
-        aspect_ratio:       aspect_ratio,
-        duration:           duration,
+        prompt:            formData.get("prompt") as string,
+        first_frame_image: base64_image,
+        aspect_ratio:      aspect_ratio,
+        duration:          duration,
       };
     } else {
       input = {
@@ -139,22 +146,20 @@ const createOptions = async (formData: FormData) => {
       };
     }
   } else {
-    // Generic image-to-video fallback
     const first_frame_image = formData.get("image");
     const base64_image      = await imageToBase64(first_frame_image as File);
     input = {
-      prompt:             formData.get("prompt") as string,
-      first_frame_image:  base64_image,
-      aspect_ratio:       aspect_ratio,
-      duration:           duration,
+      prompt:            formData.get("prompt") as string,
+      first_frame_image: base64_image,
+      aspect_ratio:      aspect_ratio,
+      duration:          duration,
     };
   }
 
+  // ✅ 只有配置了 WEBHOOK_HOST 才加 webhook，不传空字符串
   const options: Record<string, unknown> = {
-    model:                  model,
-    input:                  input,
-    webhook:                "",
-    webhook_events_filter:  [] as string[],
+    model: model,
+    input: input,
   };
 
   if (WEBHOOK_HOST) {

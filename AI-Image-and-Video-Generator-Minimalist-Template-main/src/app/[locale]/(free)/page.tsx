@@ -1,4 +1,6 @@
 import WorkerWrapper from "@/components/replicate/img-to-video/worker-wraper";
+import TextToImageWrapper from "@/components/replicate/text-to-image/worker-wraper";
+import TabSwitcher from "@/components/replicate/tab-switcher";
 import { getMetadata } from "@/components/seo/seo";
 import FaqClient from "@/components/landingpage/faq-client";
 import PricingSection from "@/components/landingpage/pricing-section";
@@ -23,8 +25,8 @@ export default function Home({
 }: {
   params: { locale: string };
 }) {
-  const video     = "/resources/example3.webm";
-  const effectId  = "1";
+  const video = "/resources/example3.webm";
+  const effectId = "1";
   const multiLanguageOfGenerator = "HomePage.generator";
 
   const features = [
@@ -83,31 +85,47 @@ export default function Home({
             <br className="hidden md:block" /> Video Creation Platform
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 md:mb-12 font-medium drop-shadow-md px-4">
-            Upload a photo, describe the motion, choose your format — and let
-            AI bring it to life in minutes. No editing skills needed.
+            Upload a photo and animate it into a video, or generate stunning
+            images from text — all in one place.
           </p>
         </div>
 
+        {/* ─── 两个功能 Tab 切换 ─── */}
         <div className="w-full flex justify-center px-2 sm:px-4">
           <div className="w-full max-w-4xl">
-            <WorkerWrapper
-              effectId={effectId}
-              promotion={video}
-              lang={multiLanguageOfGenerator}
+            <TabSwitcher
+              videoContent={
+                <WorkerWrapper
+                  effectId={effectId}
+                  promotion={video}
+                  lang={multiLanguageOfGenerator}
+                />
+              }
+              imageContent={
+                <TextToImageWrapper
+                  effectId="2"
+                  multiLanguage="TextToImage"
+                  outputDefaultImage="/resources/example1.webp"
+                />
+              }
             />
           </div>
         </div>
       </section>
 
       {/* ─── FEATURES ─── */}
-      <section id="features" className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10">
+      <section
+        id="features"
+        className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
               What You Can Create
             </h2>
             <p className="text-white/80 text-base md:text-lg max-w-2xl mx-auto">
-              Two AI generation tools. Fully functional. No extra setup required.
+              Two AI generation tools. Fully functional. No extra setup
+              required.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
@@ -132,14 +150,18 @@ export default function Home({
       </section>
 
       {/* ─── HOW IT WORKS ─── */}
-      <section id="how-it-works" className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10">
+      <section
+        id="how-it-works"
+        className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
               Three Steps to Your AI Video
             </h2>
             <p className="text-white/80 text-base md:text-lg">
-              No timeline editor. No software to install. Just upload, prompt, and generate.
+              No timeline editor. No software to install. Just upload, prompt,
+              and generate.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -164,7 +186,10 @@ export default function Home({
       </section>
 
       {/* ─── PRICING ─── */}
-      <section id="pricing" className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10">
+      <section
+        id="pricing"
+        className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
@@ -179,7 +204,10 @@ export default function Home({
       </section>
 
       {/* ─── FAQ ─── */}
-      <section id="faq" className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10">
+      <section
+        id="faq"
+        className="py-16 md:py-24 px-4 sm:px-6 w-full relative z-10"
+      >
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10 md:mb-12">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">

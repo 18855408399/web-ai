@@ -1,218 +1,211 @@
 {
   "Nav": {
     "home": "Home",
-    "text-to-image": "Text to Image",
+    "text-to-image": "Flux 1.1 Pro",
     "logOut": "Log Out",
     "login": "Sign In",
     "dashboard": "My Workspace",
     "pricing": "Pricing",
-    "create": "Create a Video",
-    "generator": "Video Generator"
+    "create": "Kling 2.1 Video",
+    "generator": "Studio"
   },
   "HomePage": {
     "seo": {
-      "title": "AIO – AI Image & Video Generator | Kling v2.1 + Flux 1.1 Pro",
-      "description": "Upload a photo and generate cinematic AI videos with Kling v2.1, or create stunning images from text with Flux 1.1 Pro. Choose your aspect ratio and duration."
+      "title": "AIO – Cinematic AI Video & Image Generator | Kling 2.1 + Flux 1.1 Pro",
+      "description": "Create studio-quality cinematic AI videos with Kling 2.1 and ultra-HD images with Flux 1.1 Pro. The ultimate AI creative suite."
     },
     "top": {
-      "subTitle": "AI Image & Video Generator",
-      "description": "Upload a photo as your starting frame, describe the motion, and let Kling v2.1 animate it into a smooth video. Or switch to AI Image to generate stunning visuals from text alone.",
-      "button1": "Try for Free — 10 Images or 1 Video",
-      "button2": "View Subscription Plans"
+      "subTitle": "The Future of Cinematic AI",
+      "description": "Transform static imagination into fluid reality. Powered by Kling 2.1 for lifelike motion and Flux 1.1 Pro for unmatched image fidelity. Professional results, zero editing required.",
+      "button1": "Start Creating for Free",
+      "button2": "Explore Pro Plans"
     },
     "userExample": {
-      "title": "Real Outputs from Real Users",
-      "description": "See how creators are turning still photos into animated videos with Kling v2.1."
+      "title": "Masterpieces from Our Community",
+      "description": "See how world-class creators are using Kling 2.1 to animate the impossible."
     },
-    "testimonials-slogan": "Join creators generating AI videos and images every day.",
+    "testimonials-slogan": "Join 50,000+ creators pushing the boundaries of AI art.",
     "what": {
-      "title": "What Can AIO Do?",
-      "description": "Two powerful AI tools in one platform — image-to-video animation powered by Kling v2.1, and text-to-image generation powered by Flux 1.1 Pro.",
-      "itemTitle1": "Image to Video",
-      "itemDescription1": "Upload a photo as the first frame. Kling v2.1 animates it based on your motion prompt — choose 16:9, 9:16, or 1:1, and 5s or 10s.",
-      "itemTitle2": "Text to Image",
-      "itemDescription2": "Type a description and Flux 1.1 Pro renders a high-quality 1024×1024 image. No source photo required.",
-      "itemTitle3": "Simple Workflow",
-      "itemDescription3": "Upload → Prompt → Select format → Generate. Results are saved to your Workspace automatically.",
-      "itemTitle4": "No Editing Experience Needed",
-      "itemDescription4": "Designed for anyone. No video editing software or technical background required."
+      "title": "Why Choose AIO?",
+      "description": "We've integrated the world's most powerful AI models into one seamless, production-ready workflow.",
+      "itemTitle1": "Kling 2.1 Engine",
+      "itemDescription1": "Industry-leading image-to-video animation. Precise motion control with cinematic physics in 16:9, 9:16, or 1:1.",
+      "itemTitle2": "Flux 1.1 Pro Art",
+      "itemDescription2": "The gold standard for text-to-image. Generate hyper-realistic 1024×1024 visuals with incredible prompt adherence.",
+      "itemTitle3": "Instant Production",
+      "itemDescription3": "Upload, prompt, and render. Get studio-quality outputs in minutes, not hours.",
+      "itemTitle4": "Commercial Ready",
+      "itemDescription4": "All generated content is high-resolution and ready for commercial use in film, ads, or social media."
     },
     "how": {
-      "title": "How to Create Your First AI Video",
-      "description": "Generate an AI video in three steps:",
-      "item1": "Upload a clear, well-lit photo as your starting frame.",
-      "item2": "Describe the motion: camera moves, character actions, mood, or lighting.",
-      "item3": "Select aspect ratio (16:9 / 9:16 / 1:1) and duration (5s or 10s), then generate.",
-      "button": "Start Creating Now"
+      "title": "Three Steps to Studio Quality",
+      "description": "Your professional workflow starts here:",
+      "item1": "Upload your source image (JPG/PNG/WebP) to set the visual DNA.",
+      "item2": "Describe the cinematic motion: camera sweeps, action, and lighting mood.",
+      "item3": "Select your format and hit Generate. Your masterpiece will be ready in minutes.",
+      "button": "Create Your First Masterpiece"
     },
     "testimonials": {
-      "title": "What Our Users Say",
-      "description": "See how AIO has helped people turn photos into moving stories."
+      "title": "Trusted by Creators",
+      "description": "Real feedback from filmmakers, designers, and digital artists."
     },
     "FAQ": {
-      "title": "Frequently Asked Questions",
-      "Q1": "Do I need to upload an image to generate a video?",
-      "A1": "Yes. The video generation tool (Kling v2.1) requires a start image — it animates from your uploaded photo.",
-      "Q2": "Can I choose the video aspect ratio and duration?",
-      "A2": "Yes. Before generating, you can choose aspect ratio (16:9 / 9:16 / 1:1) and duration (5 seconds or 10 seconds).",
-      "Q3": "What resolution will my video be?",
-      "A3": "Resolution is determined automatically by Kling v2.1 (typically HD quality).",
-      "Q4": "How long does video generation take?",
-      "A4": "Typically 2 to 3 minutes. You can safely leave the page — all results are saved to your Workspace.",
-      "Q5": "What is included in the free plan?",
-      "A5": "You receive 20 free credits on signup. Each video costs 15 credits; each image costs 2 credits.",
-      "Q6": "How do I cancel my subscription?",
-      "A6": "Email our support team at support@ai-videogenerator.app. Your plan remains active until the end of your billing period."
+      "title": "Technical FAQ",
+      "Q1": "Does Kling 2.1 require an image?",
+      "A1": "Yes, for maximum control and consistency, our video engine animates directly from your uploaded 'starting frame'.",
+      "Q2": "Can I customize the output format?",
+      "A2": "Absolutely. You can toggle between Cinematic Landscape (16:9), Social Portrait (9:16), and Square (1:1).",
+      "Q3": "What is the output resolution?",
+      "A3": "Kling 2.1 generates High-Bitrate HD video optimized for professional screens.",
+      "Q4": "Where are my results stored?",
+      "A4": "Everything is securely saved in your private 'My Workspace'. You can download them anytime.",
+      "Q5": "What do I get as a starter?",
+      "A5": "New accounts get 20 credits—perfect for testing your first cinematic video or 10 HD images.",
+      "Q6": "Is there a refund policy?",
+      "A6": "We offer support for all billing inquiries at support@ai-videogenerator.app. Subscriptions can be managed anytime."
     },
     "Features": {
-      "heading": "Two AI Tools, One Platform",
-      "subheading": "Image-to-video animation and text-to-image generation, powered by state-of-the-art models.",
+      "heading": "Production-Grade AI Suite",
+      "subheading": "The most advanced Kling and Flux models, optimized for speed and quality.",
       "feature1": {
-        "title": "Image to Video (Kling v2.1)",
-        "description": "Animate any photo into a smooth HD video. Choose aspect ratio and duration before generating."
+        "title": "Kling 2.1 Video Engine",
+        "description": "High-fidelity motion synthesis with 5s or 10s duration options."
       },
       "feature2": {
-        "title": "Text to Image (Flux 1.1 Pro)",
-        "description": "Generate a high-quality 1024×1024 image from a text prompt. Costs 2 credits per image."
+        "title": "Flux 1.1 Pro Imaging",
+        "description": "Next-gen text-to-image with unmatched realism and lighting."
       },
       "feature3": {
-        "title": "Flexible Aspect Ratios",
-        "description": "16:9 for landscape, 9:16 for portrait / short-form, or 1:1 for square content."
+        "title": "Dynamic Aspect Ratios",
+        "description": "Tailor-made formats for YouTube, TikTok, and Instagram."
       },
       "feature4": {
-        "title": "5s or 10s Video Duration",
-        "description": "Generate a 5-second quick clip or a 10-second extended sequence. Your choice before generation."
+        "title": "Priority GPU Rendering",
+        "description": "Turbo-charged processing for Pro and Elite members."
       },
       "feature5": {
-        "title": "Workspace & History",
-        "description": "All generated videos and images are saved to your personal Workspace. Download or review them any time."
+        "title": "Cloud Workspace",
+        "description": "A centralized hub to manage, review, and download your history."
       },
       "feature6": {
-        "title": "Privacy & Data Protection",
-        "description": "Your uploads are processed securely. Generated results are stored in your private Workspace only."
+        "title": "Enterprise Security",
+        "description": "Your data and uploads are encrypted and processed with strict privacy."
       }
     },
     "generator": {
       "input": {
-        "title": "AI Video Generator",
-        "text-to-video": "Image to Video (Kling v2.1)",
-        "img-to-video":  "Image to Video (Kling v2.1)",
-        "description": "Upload a start image, describe the motion, choose your aspect ratio and duration, then generate.",
+        "title": "Cinematic Video Studio",
+        "text-to-video": "Kling 2.1 Image-to-Video",
+        "img-to-video": "Kling 2.1 Image-to-Video",
+        "description": "Animate your photos with cinematic physics. Choose your duration and motion intensity.",
         "createButton": "Generate Video (15 Credits)",
-        "upload": "Upload Start Image",
-        "upload-tips": "Click to upload a photo (JPG, PNG, WebP)",
-        "promptTips":  "Describe the motion: e.g. 'camera slowly zooms in, the subject smiles and turns their head'"
+        "upload": "Drop Starting Frame Here",
+        "upload-tips": "Click to browse or drag and drop",
+        "promptTips": "Pro Tip: Describe camera movement, e.g., 'Slow cinematic zoom into the subject's eyes'."
       },
       "output": {
-        "title": "Your Generated Video",
-        "unGeneratedTip": "No video yet — upload an image and enter a prompt to get started.",
-        "downloadButton": "Download Video"
+        "title": "Rendered Output",
+        "unGeneratedTip": "Ready to create? Upload an image and let the AI work its magic.",
+        "downloadButton": "Export in HD"
       }
     },
     "cta": {
-      "title": "Turn Your Photos into Moving Stories",
-      "description": "Upload a photo, describe the motion, and let Kling v2.1 animate it into a cinematic video in minutes.",
-      "cta": "Create Your First Video — Free"
+      "title": "Ready to Build the Future?",
+      "description": "Join the elite group of creators using Kling 2.1 to redefine digital storytelling.",
+      "cta": "Start Creating Now — No Credit Card Required"
     }
   },
   "Pricing": {
-    "title": "Flexible Pricing Plans",
-    "description": "Start free with 20 credits. Video generation costs 15 credits; Image generation costs 2 credits.",
+    "title": "Professional Plans",
+    "description": "Start for free, upgrade for unlimited creative power. Annual plans save up to 40%.",
     "seo": {
-      "title": "AIO Pricing – Plans for Every Creator",
-      "description": "Simple, transparent pricing for AI video and image generation. Start free, scale as you grow."
+      "title": "AIO Pricing – Flexible Plans for Every Budget",
+      "description": "Simple pricing. Choose between Monthly flexibility or Annual value. Get up to 9,000 credits."
     },
     "FAQ": {
-      "title": "Subscription & Billing Questions",
-      "Q1": "Can I cancel anytime?",
-      "A1": "Yes. Email us at support@ai-videogenerator.com. Your subscription stays active until the end of the billing cycle.",
-      "Q2": "Do you offer monthly and annual plans?",
-      "A2": "Yes — monthly for flexibility, annual for the best value with 9,000 yearly credits.",
-      "Q3": "Which plan is most cost-effective?",
-      "A3": "The annual plan offers the lowest cost per credit, giving you the most power for your creations.",
-      "Q4": "Can I switch between plans?",
-      "A4": "Yes, you can upgrade or downgrade at any time.",
-      "Q5": "How many credits does each generation use?",
-      "A5": "Video generation (Kling v2.1) costs 15 credits per video. Image generation (Flux 1.1 Pro) costs 2 credits per image.",
-      "Q6": "What if I run out of credits?",
-      "A6": "You can purchase one-time credit packs at any time without changing your subscription.",
-      "Q7": "Is there a free trial?",
-      "A7": "Yes — every new account receives 20 free credits. That's enough for one video or 10 image generations.",
-      "Q8": "How do I contact support?",
-      "A8": "Reach out via email. We typically respond within 24 hours.",
-      "Q9": "Do I need to install anything?",
-      "A9": "No. AIO is fully web-based.",
-      "Q10": "Is my payment information secure?",
-      "A10": "Yes — all payments are handled via Creem with industry-standard encryption."
+      "title": "Billing & Subscription",
+      "Q1": "Can I cancel my subscription?",
+      "A1": "Yes, you can cancel at any time from your dashboard or by emailing support. You'll retain access until the end of the period.",
+      "Q2": "What is the benefit of the Annual Plan?",
+      "A2": "The Annual Elite plan is our best value, offering 9,000 credits upfront and the lowest per-generation cost.",
+      "Q3": "Which plan is right for me?",
+      "A3": "If you're a heavy creator, the Annual Elite offers the most 'bang for your buck' at roughly $0.02 per credit.",
+      "Q4": "Can I top up credits?",
+      "A4": "Yes! One-time credit packs are available if you run out mid-month.",
+      "Q5": "Is there a limit on downloads?",
+      "A5": "No limits. Once you generate it, it's yours to keep and download as many times as you like.",
+      "Q6": "Are payments secure?",
+      "A6": "We use Creem for bank-level payment security and encryption."
     }
   },
   "TextToImage": {
     "seo": {
-      "title": "AI Image Generator | Flux 1.1 Pro – Text to Image",
-      "description": "Generate high-quality 1024×1024 images from a text prompt using Flux 1.1 Pro."
+      "title": "Flux 1.1 Pro | Ultra-HD AI Image Generator",
+      "description": "Experience the world's most advanced text-to-image model. Hyper-realistic art in seconds."
     },
     "top": {
-      "subTitle": "AI Image Generator (Flux 1.1 Pro)",
-      "description": "Enter a text description and Flux 1.1 Pro will generate a 1024×1024 image. Costs 2 credits per generation."
+      "subTitle": "Flux 1.1 Pro Art Studio",
+      "description": "Turn complex prompts into breathtaking 1024×1024 visuals. 2 Credits per masterpiece."
     },
     "input": {
-      "title": "AI Image Generator",
-      "upload": "Upload a Reference Photo (Optional)",
-      "description": "Describe the image you want to generate.",
-      "button": "Generate Image (2 Credits)"
+      "title": "Image Generator",
+      "upload": "Style Reference (Optional)",
+      "description": "Describe your vision in detail...",
+      "button": "Render Image (2 Credits)"
     }
   },
   "dashboard": {
-    "title": "My Workspace",
+    "title": "Creative Workspace",
     "subscription": {
-      "remainingCredits": "Credits Remaining",
-      "planName": "Current Plan",
-      "periodStart": "Start Date",
-      "periodEnd": "End Date"
+      "remainingCredits": "Available Credits",
+      "planName": "Membership Level",
+      "periodStart": "Joined On",
+      "periodEnd": "Renewal Date"
     },
     "table": {
-      "taskId": "Task ID",
-      "function": "Tool Used",
-      "processTime": "Process Time",
+      "taskId": "ID",
+      "function": "Engine",
+      "processTime": "Render Time",
       "status": "Status",
-      "credit": "Credits Used",
-      "created": "Created At",
-      "view": "View"
+      "credit": "Usage",
+      "created": "Timestamp",
+      "view": "Preview"
     },
-    "loading": "Loading your workspace...",
-    "noResults": "No generations yet",
+    "loading": "Syncing your workspace...",
+    "noResults": "Your gallery is empty. Start creating!",
     "modal": {
-      "noContent": "No content available for this result",
-      "effect": "Tool",
-      "status": "Status"
+      "noContent": "Processing your request...",
+      "effect": "Model Used",
+      "status": "Current Status"
     }
   },
   "Seo": {
     "home": {
-      "title": "AIO – AI Image & Video Generator | Kling v2.1 + Flux 1.1 Pro",
-      "description": "Upload a photo and generate cinematic AI videos with Kling v2.1, or create images from text with Flux 1.1 Pro."
+      "title": "AIO – Professional AI Video & Image Generator",
+      "description": "Unlock the power of Kling 2.1 and Flux 1.1 Pro. The premier platform for AI-driven cinematic content."
     }
   },
   "Footer": {
-    "description": "AIO is an AI generation platform powered by Kling v2.1 and Flux 1.1 Pro. Create stunning videos and images without any editing experience.",
+    "description": "AIO is a high-performance AI creative platform. We bridge the gap between imagination and professional-grade production.",
     "recommend": {
-      "title": "Tools",
+      "title": "Solutions",
       "item": {
-        "item1": "AI Video Generator"
+        "item1": "Video Engine",
+        "item2": "Image Engine"
       }
     },
     "legal": {
-      "title": "Legal",
+      "title": "Company",
       "item": {
         "item1": "Privacy Policy",
         "item2": "Terms of Service"
       }
     },
     "multiLanguage": {
-      "title": "Language"
+      "title": "Localization"
     },
     "contact": {
-      "title": "Contact Us"
+      "title": "Support"
     }
   }
 }

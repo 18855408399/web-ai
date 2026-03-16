@@ -3,19 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  .markdown > * {
-    all: revert;
-  }
+  .markdown > * { all: revert; }
   :root {
-    --background: 240 10% 3.9%;
+    --background: 240 10% 2%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-dark: 0 0% 80%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -27,60 +24,52 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 }
 
 @layer utilities {
-  /* 解决点击图片转视频变白的 Bug：强制所有生成容器背景透明或深色 */
-  .bg-white {
-    background-color: rgba(9, 9, 11, 0.7) !important;
-    backdrop-filter: blur(12px);
-    border-color: rgba(255, 255, 255, 0.1) !important;
+  /* 🔥 核心修复：强制修复第三方组件点击变白的 Bug */
+  .bg-white, [style*="background-color: white"], [style*="background-color: rgb(255, 255, 255)"] {
+    background-color: rgba(12, 12, 15, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
   }
 
-  /* 尊贵年费卡片边框闪烁 */
-  .premium-border {
-    position: relative;
-    border: 2px solid rgba(255, 215, 0, 0.5) !important;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+  /* 电影感标题：渐变 + 阴影 */
+  .hero-title {
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
   }
 
-  /* 扫光动画：让你的定价卡片看起来很贵 */
-  .shimmer-effect {
+  /* 高级扫光特效 */
+  .shimmer-premium {
     position: relative;
     overflow: hidden;
   }
-  .shimmer-effect::after {
+  .shimmer-premium::after {
     content: "";
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent 45%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 55%
-    );
-    animation: shimmer 5s infinite;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.08) 50%, transparent 55%);
+    animation: shimmer 6s infinite linear;
+  }
+
+  /* 背景氛围极光 */
+  .aurora-blur {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+    filter: blur(80px);
+    z-index: -1;
   }
 }
 
 @keyframes shimmer {
-  0% { transform: translate(-30%, -30%) rotate(0deg); }
-  100% { transform: translate(30%, 30%) rotate(0deg); }
-}
-
-/* 极光背景渐变 */
-.aurora-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1), transparent 40%),
-              radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1), transparent 40%);
-  z-index: -1;
+  0% { transform: translateX(-30%) translateY(-30%); }
+  100% { transform: translateX(30%) translateY(30%); }
 }

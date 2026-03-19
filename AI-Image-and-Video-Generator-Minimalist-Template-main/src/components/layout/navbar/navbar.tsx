@@ -28,7 +28,9 @@ export default function Navbar() {
     }
   }, [session, setUser]);
 
+  // 这里在数组第一位增加了 Home 按钮，并确保所有链接都带上当前语言前缀
   const navLinks = [
+    { label: "Home", href: `/${locale}` },
     { label: "Features", href: `/${locale}/features` },
     { label: "How it Works", href: `/${locale}/how-it-works` },
     { label: "Pricing", href: `/${locale}/pricing` },
@@ -44,15 +46,17 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        {/* Logo 区域：现在点击 AIO 也可以直接回主页 */}
         <a
           href={`/${locale}`}
-          className="flex items-center gap-1 cursor-pointer"
+          className="flex items-center gap-1 cursor-pointer group"
         >
-          <div className="text-2xl font-black tracking-tighter text-white drop-shadow-md">
+          <div className="text-2xl font-black tracking-tighter text-white drop-shadow-md group-hover:text-white/80 transition-all">
             A<span className="text-white/70">I</span>O
           </div>
         </a>
 
+        {/* 电脑端导航栏 */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/90 tracking-wide">
           {navLinks.map((link) => (
             <a
@@ -73,58 +77,58 @@ export default function Navbar() {
           )}
         </div>
 
+        {/* 登录/头像 区域 */}
         <div className="hidden md:flex items-center gap-4">
           {user ? (
             <UserButton />
           ) : (
-            <>
-              <LoginButton />
-            </>
+            <LoginButton />
           )}
         </div>
 
+        {/* 手机端菜单按钮 */}
         <button
           className="md:hidden text-white p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
         >
-          {isMobileMenuOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
-          )}
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
-
+      {/* 手机端菜单 */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-black/80 backdrop-blur-2xl border-b border-white/10 overflow-hidden"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden absolute left-0 right-0 top-16 bg-black/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 flex flex-col gap-4 z-50"
           >
-            <div className="px-4 pt-2 pb-6 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white/80 hover:text-white py-2 font-medium"
-                >
-                  {link.label}
-                </a>
-              ))}
-              {user && (
-                <a
-                  href={`/${locale}/dashboard`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white/80 hover:text-white py-2 font-medium"
-                >
-                  My Workspace
-                </a>
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-white text-base font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+            {user && (
+              <a
+                href={`/${locale}/dashboard`}
+                className="text-white text-base font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                My Workspace
+              </a>
+            )}
+            <div className="pt-2 border-t border-white/20 flex flex-col gap-2">
+              {user ? (
+                <UserButton />
+              ) : (
+                <LoginButton />
               )}
-              <div className="h-px bg-white/10 my-2 w-full"></div>
-              <div>{user ? <UserButton /> : <LoginButton />}</div>
             </div>
           </motion.div>
         )}

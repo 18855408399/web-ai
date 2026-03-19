@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Tab } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { localesName } from "@/i18n/routing";
+
 
 export default function What(params: { multiLanguage: string, image: string }) {
   const t = useTranslations(params.multiLanguage);

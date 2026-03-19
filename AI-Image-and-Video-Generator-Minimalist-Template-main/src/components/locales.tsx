@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 import type { Selection } from "@nextui-org/react";
 import React from "react";
-import { localesName } from "@/i18n/routing";
+
 
 export default function Locales() { 
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set(["text"]));

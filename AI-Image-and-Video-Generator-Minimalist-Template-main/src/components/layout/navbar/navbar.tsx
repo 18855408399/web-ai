@@ -29,10 +29,10 @@ export default function Navbar() {
   }, [session, setUser]);
 
   const navLinks = [
-    { label: "Features", href: `/${locale}#features` },
-    { label: "How it Works", href: `/${locale}#how-it-works` },
-    { label: "Pricing", href: `/${locale}#pricing` },
-    { label: "FAQ", href: `/${locale}#faq` },
+    { label: "Features", href: `/${locale}/features` },
+    { label: "How it Works", href: `/${locale}/how-it-works` },
+    { label: "Pricing", href: `/${locale}/pricing` },
+    { label: "FAQ", href: `/${locale}/faq` },
   ];
 
   return (

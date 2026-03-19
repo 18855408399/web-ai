@@ -9,9 +9,9 @@ import LoginButton from "@/components/button/login-button";
 import UserButton from "@/components/button/user-button";
 import { useAppContext } from "@/contexts/app";
 
-const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
   const locale = useLocale();
   const { user, setUser } = useAppContext();
@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (session && session.user) {
+    if (session?.user) {
       setUser(session.user);
     }
   }, [session, setUser]);
@@ -123,6 +123,4 @@ const Navbar: React.FC = () => {
       </AnimatePresence>
     </nav>
   );
-};
-
-export default Navbar;
+}

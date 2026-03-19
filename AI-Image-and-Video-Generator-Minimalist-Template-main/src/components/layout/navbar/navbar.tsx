@@ -43,13 +43,11 @@ const Navbar: React.FC = () => {
           ? "bg-black/60 backdrop-blur-xl border-b border-white/10"
           : "bg-transparent"
       }`}
-      aria-label="Main navigation"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a
           href={`/${locale}`}
           className="flex items-center gap-1 cursor-pointer group"
-          aria-label="Homepage"
         >
           <div className="text-2xl font-black tracking-tighter text-white drop-shadow-md group-hover:text-white/80 transition-all">
             A<span className="text-white/70">I</span>O
@@ -84,7 +82,6 @@ const Navbar: React.FC = () => {
           className="md:hidden text-white p-2"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
           type="button"
-          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>

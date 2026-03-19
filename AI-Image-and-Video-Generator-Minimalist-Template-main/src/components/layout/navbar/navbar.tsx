@@ -28,7 +28,6 @@ const Navbar: React.FC = () => {
     }
   }, [session, setUser]);
 
-  // 确保所有链接带有当前语言前缀
   const navLinks = [
     { label: "Home", href: `/${locale}` },
     { label: "Features", href: `/${locale}/features` },
@@ -47,7 +46,6 @@ const Navbar: React.FC = () => {
       aria-label="Main navigation"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo 区域 */}
         <a
           href={`/${locale}`}
           className="flex items-center gap-1 cursor-pointer group"
@@ -58,7 +56,6 @@ const Navbar: React.FC = () => {
           </div>
         </a>
 
-        {/* 电脑端导航栏 */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/90 tracking-wide">
           {navLinks.map((link) => (
             <a
@@ -79,12 +76,10 @@ const Navbar: React.FC = () => {
           )}
         </div>
 
-        {/* 登录/头像 区域 */}
         <div className="hidden md:flex items-center gap-4">
           {user ? <UserButton /> : <LoginButton />}
         </div>
 
-        {/* 手机端菜单按钮 */}
         <button
           className="md:hidden text-white p-2"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -95,7 +90,6 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      {/* 手机端菜单 */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -104,8 +98,6 @@ const Navbar: React.FC = () => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
             className="md:hidden absolute left-0 right-0 top-16 bg-black/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 flex flex-col gap-4 z-50"
-            role="menu"
-            aria-label="Mobile navigation"
           >
             {navLinks.map((link) => (
               <a
@@ -113,7 +105,6 @@ const Navbar: React.FC = () => {
                 href={link.href}
                 className="text-white text-base font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
-                tabIndex={0}
               >
                 {link.label}
               </a>
@@ -123,7 +114,6 @@ const Navbar: React.FC = () => {
                 href={`/${locale}/dashboard`}
                 className="text-white text-base font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
-                tabIndex={0}
               >
                 My Workspace
               </a>

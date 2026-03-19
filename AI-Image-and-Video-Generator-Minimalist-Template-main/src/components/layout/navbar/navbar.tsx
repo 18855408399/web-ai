@@ -9,9 +9,9 @@ import LoginButton from "@/components/button/login-button";
 import UserButton from "@/components/button/user-button";
 import { useAppContext } from "@/contexts/app";
 
-export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const Navbar: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const { data: session } = useSession();
   const locale = useLocale();
   const { user, setUser } = useAppContext();
@@ -28,7 +28,7 @@ export default function Navbar() {
     }
   }, [session, setUser]);
 
-  // 这里在数组第一位增加了 Home 按钮，并确保所有链接都带上当前语言前缀
+  // 确保所有链接带有当前语言前缀
   const navLinks = [
     { label: "Home", href: `/${locale}` },
     { label: "Features", href: `/${locale}/features` },
@@ -44,12 +44,14 @@ export default function Navbar() {
           ? "bg-black/60 backdrop-blur-xl border-b border-white/10"
           : "bg-transparent"
       }`}
+      aria-label="Main navigation"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo 区域：现在点击 AIO 也可以直接回主页 */}
+        {/* Logo 区域 */}
         <a
           href={`/${locale}`}
           className="flex items-center gap-1 cursor-pointer group"
+          aria-label="Homepage"
         >
           <div className="text-2xl font-black tracking-tighter text-white drop-shadow-md group-hover:text-white/80 transition-all">
             A<span className="text-white/70">I</span>O
@@ -79,21 +81,20 @@ export default function Navbar() {
 
         {/* 登录/头像 区域 */}
         <div className="hidden md:flex items-center gap-4">
-          {user ? (
-            <UserButton />
-          ) : (
-            <LoginButton />
-          )}
+          {user ? <UserButton /> : <LoginButton />}
         </div>
 
         {/* 手机端菜单按钮 */}
         <button
           className="md:hidden text-white p-2"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          type="button"
+          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
+
       {/* 手机端菜单 */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -103,6 +104,8 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
             className="md:hidden absolute left-0 right-0 top-16 bg-black/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 flex flex-col gap-4 z-50"
+            role="menu"
+            aria-label="Mobile navigation"
           >
             {navLinks.map((link) => (
               <a
@@ -110,6 +113,7 @@ export default function Navbar() {
                 href={link.href}
                 className="text-white text-base font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
+                tabIndex={0}
               >
                 {link.label}
               </a>
@@ -119,20 +123,19 @@ export default function Navbar() {
                 href={`/${locale}/dashboard`}
                 className="text-white text-base font-medium py-2 px-3 rounded hover:bg-white/10 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
+                tabIndex={0}
               >
                 My Workspace
               </a>
             )}
             <div className="pt-2 border-t border-white/20 flex flex-col gap-2">
-              {user ? (
-                <UserButton />
-              ) : (
-                <LoginButton />
-              )}
+              {user ? <UserButton /> : <LoginButton />}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </nav>
   );
-}
+};
+
+export default Navbar;

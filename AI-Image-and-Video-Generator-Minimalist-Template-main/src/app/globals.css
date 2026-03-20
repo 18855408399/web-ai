@@ -1,79 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    --background: 240 10% 2%;
-    --foreground: 0 0% 100%;
-    --card: 240 10% 3%;
-    --card-foreground: 0 0% 100%;
-    --primary: 270 100% 60%;
-    --border: 240 10% 12%;
-    --radius: 1.25rem;
-  }
-
-  html,
-  body {
-    background-color: #050505 !important;
-    background-image: none !important;
-    color: white;
-  }
-
-  body::before,
-  body::after {
-    background-image: none !important;
-  }
-}
-
 @layer utilities {
-  /* 1. 强制统一所有卡片（板块）的背景和边框 */
-  /* 无论它是图片生成还是视频生成，统统变成 Pollo 深色风格 */
-  .pollo-block, 
-  div[class*="bg-zinc-900"], 
-  div[class*="bg-neutral-900"],
-  section div.rounded-3xl {
-    background-color: #0A0A0A !important;
-    border: 1px solid #1A1A1A !important;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
+  /* 电影级渐变背景 */
+  .bg-hero-mesh {
+    background-color: #000;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 50%), 
+      radial-gradient(at 100% 0%, rgba(34, 197, 94, 0.1) 0px, transparent 50%);
   }
 
-  /* 2. 强力统一按钮：把那个蓝色按钮强行改成紫色渐变 */
-  button.bg-blue-600, 
-  button[class*="bg-blue"],
-  .bg-blue-600,
-  button:has(span:contains("Generate")) {
-    background: linear-gradient(90deg, #6D28D9, #A855F7) !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3) !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
+  /* 商业级毛玻璃卡片 */
+  .vid-card {
+    background: rgba(23, 23, 23, 0.6) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transition: border 0.3s ease;
+  }
+  
+  .vid-card:hover {
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
-  button.bg-blue-600:hover {
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.5) !important;
-    transform: translateY(-1px);
-  }
-
-  /* 3. 统一输入框外观 */
-  textarea, input {
-    background-color: #0F0F0F !important;
-    border: 1px solid #222 !important;
-    border-radius: 0.75rem !important;
-    color: white !important;
-  }
-
-  /* 4. 标题渐变 */
-  .title-gradient {
-    background: linear-gradient(180deg, #FFFFFF 30%, #A855F7 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  /* 5. 隐藏顽固的白色 Bug */
-  .bg-white {
-    background-color: #0A0A0A !important;
-    color: white !important;
+  /* 动效：让按钮有微弱呼吸感 */
+  .btn-premium {
+    background: #22c55e !important;
+    color: #000 !important;
+    font-weight: 600;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+    border-radius: 12px;
   }
 }

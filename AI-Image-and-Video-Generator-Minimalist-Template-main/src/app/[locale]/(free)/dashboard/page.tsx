@@ -15,356 +15,203 @@ import {
   Spinner,
   ModalContent,
   ModalBody,
-  Link,
 } from "@nextui-org/react";
 import { EyeIcon } from "@nextui-org/shared-icons";
 import { UserSubscriptionInfo } from "@/backend/type/domain/user_subscription_info";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+
 export default function Dashboard() {
   const { user } = useAppContext();
   const [effectResults, setEffectResults] = useState<EffectResultInfo[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [selectedResult, setSelectedResult] = useState<EffectResultInfo | null>(
-    null
-  );
+  const [selectedResult, setSelectedResult] = useState<EffectResultInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const pageSize = 10;
-  const [userSubscriptionInfo, setUserSubscriptionInfo] =
-    useState<UserSubscriptionInfo | null>(null);
-  const router = useRouter();
+  const [userSubscriptionInfo, setUserSubscriptionInfo] = useState<UserSubscriptionInfo | null>(null);
   const t = useTranslations("dashboard");
+
   const fetchUserSubscriptionInfo = async () => {
     if (!user?.uuid) return;
-    const userSubscriptionInfo = await fetch(
-      "/api/user/get_user_subscription_info",
-      {
+    try {
+      const res = await fetch("/api/user/get_user_subscription_info", {
         method: "POST",
         body: JSON.stringify({ user_id: user.uuid }),
-      }
-    ).then((res) => {
-      if (!res.ok) throw new Error("Failed to fetch user subscription info");
-      return res.json();
-    });
-    setUserSubscriptionInfo(userSubscriptionInfo);
+      });
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setUserSubscriptionInfo(data);
+    } catch (e) { console.error(e); }
   };
 
   const fetchResults = async (pageNum: number) => {
     if (!user?.uuid) return;
-
     setIsLoading(true);
     try {
       const results = await fetch(
         `/api/effect_result/list_by_user_id?user_id=${user.uuid}&page=${pageNum}&page_size=${pageSize}`
-      ).then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch results");
-        return res.json();
-      });
+      ).then((res) => res.json());
       setEffectResults(results);
-    } catch (error) {
-      console.error("Failed to fetch results:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (error) { console.error(error); } finally { setIsLoading(false); }
   };
 
   const fetchCount = async () => {
     if (!user?.uuid) return;
-
     try {
-      const response = await fetch(
-        `/api/effect_result/count_all?user_id=${user.uuid}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch count");
-
-      const data = await response.json();
+      const data = await fetch(`/api/effect_result/count_all?user_id=${user.uuid}`).then(res => res.json());
       const count = parseInt(data.count);
       setTotalCount(count);
-      const pages = Math.max(1, Math.ceil(count / pageSize));
-      setTotalPages(pages);
-
-      if (page > pages) {
-        setPage(1);
-      }
-    } catch (error) {
-      console.error("Failed to fetch count:", error);
-    }
+      setTotalPages(Math.max(1, Math.ceil(count / pageSize)));
+    } catch (e) { console.error(e); }
   };
 
   useEffect(() => {
-    const init = async () => {
+    if (user?.uuid) {
       fetchUserSubscriptionInfo();
-      await fetchCount();
-      await fetchResults(page);
-    };
-
-    if (user?.uuid) {
-      init();
-    }
-  }, [user?.uuid]);
-
-  useEffect(() => {
-    if (user?.uuid) {
+      fetchCount();
       fetchResults(page);
-      fetchUserSubscriptionInfo();
     }
-  }, [page]);
+  }, [user?.uuid, page]);
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
-    setPage(newPage);
-  };
-
+  const handlePageChange = (newPage: number) => setPage(newPage);
   const handleViewResult = (result: EffectResultInfo) => {
     setSelectedResult(result);
     setIsModalOpen(true);
   };
 
   return (
-    <div className="">
-      <div className="container max-w-7xl mx-auto px-4 md:p-8 py-10 md:py-12 md:pb-24">
-        <div className="mb-8 text-center animate-fade-in">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-2">
+    <div className="min-h-screen bg-[#030303] text-zinc-400">
+      <div className="container max-w-7xl mx-auto px-4 md:p-8 py-12 md:pb-24">
+        
+        {/* 页面标题 */}
+        <div className="mb-14 text-center">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-3">
             {t("title")}
           </h1>
+          <p className="text-zinc-500 font-light tracking-wide text-sm uppercase">Creative Workspace & Assets</p>
         </div>
 
+        {/* 订阅信息卡片：极简黑金/黑绿质感 */}
         {userSubscriptionInfo && (
-          <div className="mb-8 p-6 bg-blue-50 dark:bg-gray-800 rounded-2xl border border-blue-100 dark:border-gray-700 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white dark:bg-gray-700 rounded-xl p-4 border border-blue-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {t("subscription.remainingCredits")}
-                  </span>
-                  <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    {userSubscriptionInfo.remain_count}
-                  </span>
-                </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
+            {[
+              { label: t("subscription.remainingCredits"), value: userSubscriptionInfo.remain_count, highlight: true },
+              { label: t("subscription.planName"), value: userSubscriptionInfo.plan_name, highlight: false },
+              { label: t("subscription.periodStart"), value: new Date(userSubscriptionInfo.current_period_start).toLocaleDateString(), highlight: false },
+              { label: t("subscription.periodEnd"), value: userSubscriptionInfo.current_period_end ? new Date(userSubscriptionInfo.current_period_end).toLocaleDateString() : "N/A", highlight: false }
+            ].map((item, i) => (
+              <div key={i} className="vid-card p-6 flex flex-col justify-between min-h-[110px] border-white/[0.02]">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">{item.label}</span>
+                <span className={`text-2xl md:text-3xl font-bold mt-2 tracking-tighter ${item.highlight ? 'text-green-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]' : 'text-zinc-100'}`}>
+                  {item.value}
+                </span>
               </div>
-              <div className="bg-white dark:bg-gray-700 rounded-xl p-4 border border-blue-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {t("subscription.planName")}
-                  </span>
-                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    {userSubscriptionInfo.plan_name}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-white dark:bg-gray-700 rounded-xl p-4 border border-blue-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {t("subscription.periodStart")}
-                  </span>
-                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                    {new Date(
-                      userSubscriptionInfo.current_period_start
-                    ).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-white dark:bg-gray-700 rounded-xl p-4 border border-blue-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {t("subscription.periodEnd")}
-                  </span>
-                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                    {userSubscriptionInfo.current_period_end
-                      ? new Date(
-                          userSubscriptionInfo.current_period_end
-                        ).toLocaleDateString()
-                      : "N/A"}
-                  </span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         )}
+
+        {/* 列表区域 */}
         {isLoading ? (
-          <div className="flex justify-center items-center h-64 rounded-2xl">
-            <Spinner size="lg" label={t("loading")} color="primary" />
+          <div className="flex justify-center items-center h-64"><Spinner color="white" size="lg" /></div>
+        ) : effectResults?.length > 0 ? (
+          <div className="vid-card overflow-hidden border-white/[0.05]">
+            <Table 
+              removeWrapper
+              aria-label="History"
+              classNames={{
+                th: "bg-zinc-900/40 text-zinc-500 border-b border-white/[0.05] py-5 text-[11px] font-bold tracking-widest uppercase text-center",
+                td: "py-5 border-b border-white/[0.02] text-zinc-300 text-center text-sm",
+              }}
+            >
+              <TableHeader>
+                <TableColumn>ID</TableColumn>
+                <TableColumn className="text-left">FUNCTION</TableColumn>
+                <TableColumn>STATUS</TableColumn>
+                <TableColumn>CREDIT</TableColumn>
+                <TableColumn>CREATED AT</TableColumn>
+                <TableColumn>VIEW</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {effectResults.map((result, index) => (
+                  <TableRow key={result.result_id} className="hover:bg-white/[0.02] transition-colors duration-300">
+                    <TableCell className="text-zinc-600 font-mono">{(page - 1) * pageSize + index + 1}</TableCell>
+                    <TableCell className="text-left font-semibold text-zinc-100">{result.effect_name}</TableCell>
+                    <TableCell>
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        result.status === "succeeded" ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
+                      }`}>
+                        {result.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="font-medium text-zinc-400">{result.status === "succeeded" ? result.credit : "-"}</TableCell>
+                    <TableCell className="text-zinc-500">{new Date(result.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        className="text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg"
+                        onPress={() => handleViewResult(result)}
+                        isDisabled={!result.url || result.status !== "succeeded"}
+                      >
+                        <EyeIcon className="w-4 h-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        ) : effectResults && effectResults.length > 0 ? (
-          <>
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-blue-100 dark:border-gray-700 p-6 animate-fade-in overflow-x-auto">
-              <Table
-                className="min-w-full"
-                aria-label="Results table"
-                classNames={{
-                  wrapper: "bg-transparent",
-                  th: "bg-blue-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200",
-                  td: "text-gray-700 dark:text-gray-300",
-                }}
-              >
-                <TableHeader>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    #
-                  </TableColumn>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    {t("table.function")}
-                  </TableColumn>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    {t("table.processTime")}
-                  </TableColumn>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    {t("table.status")}
-                  </TableColumn>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    {t("table.credit")}
-                  </TableColumn>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    {t("table.created")}
-                  </TableColumn>
-                  <TableColumn className="text-xs md:text-sm font-semibold text-center">
-                    {t("table.view")}
-                  </TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {effectResults.map((result, index) => (
-                    <TableRow
-                      key={result.result_id}
-                      className="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-200"
-                    >
-                      <TableCell className="text-center text-xs md:text-base font-medium">
-                        {(page - 1) * pageSize + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center text-xs md:text-base">
-                        {result.effect_name}
-                      </TableCell>
-                      <TableCell className="text-center text-xs md:text-base">
-                        {result.running_time === -1
-                          ? "N/A"
-                          : `${result.running_time}s`}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex justify-center">
-                          {result.status === "succeeded" ? (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                              ✓ {result.status}
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-                              ✗ {result.status}
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center text-xs md:text-base">
-                        {result.status === "succeeded" ? result.credit : "N/A"}
-                      </TableCell>
-                      <TableCell className="text-center text-xs md:text-base">
-                        {new Date(result.created_at).toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Button
-                          isIconOnly
-                          className="bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-gray-700 dark:text-blue-400 dark:hover:bg-gray-600 transition-colors"
-                          variant="flat"
-                          onPress={() => handleViewResult(result)}
-                          isDisabled={
-                            !result.url || result.status !== "succeeded"
-                          }
-                          size="sm"
-                        >
-                          <EyeIcon className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-
-            {totalCount > 0 && (
-              <div className="flex justify-center mt-6 md:mt-8">
-                <Pagination
-                  total={totalPages}
-                  page={page}
-                  onChange={handlePageChange}
-                  showControls
-                  className="gap-1 md:gap-2"
-                  size="md"
-                  color="primary"
-                  variant="flat"
-                />
-              </div>
-            )}
-          </>
         ) : (
-          <div className="flex flex-col justify-center items-center h-64 bg-blue-50 dark:bg-gray-800 rounded-2xl border border-blue-100 dark:border-gray-700">
-            <div className="text-6xl mb-4">📊</div>
-            <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">
-              {t("noResults")}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              开始创建精彩的AI内容吧！
-            </p>
+          <div className="vid-card flex flex-col items-center justify-center py-20 border-dashed">
+            <div className="text-4xl mb-4 opacity-20">🕳️</div>
+            <p className="text-zinc-500 font-light italic">No assets found. Start creating.</p>
           </div>
         )}
 
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedResult(null);
-          }}
-          size="2xl"
-          className="mx-2"
+        {/* 分页 */}
+        {totalCount > 0 && (
+          <div className="flex justify-center mt-12">
+            <Pagination
+              total={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              size="sm"
+              classNames={{
+                wrapper: "gap-2",
+                item: "bg-transparent text-zinc-500 hover:text-white",
+                cursor: "bg-zinc-100 text-black font-bold",
+              }}
+            />
+          </div>
+        )}
+
+        {/* 结果预览弹窗 */}
+        <Modal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          size="2xl" 
           backdrop="blur"
+          classNames={{
+            base: "bg-[#0a0a0a] border border-white/10 shadow-2xl",
+            closeButton: "hover:bg-white/10 transition-colors"
+          }}
         >
-          <ModalContent className="bg-white dark:bg-gray-800">
-            {selectedResult && (
-              <ModalBody>
-                <div className="p-2 md:p-4">
-                  {!selectedResult.url ? (
-                    <div className="text-center p-4">
-                      <p className="text-gray-500 mb-2">
-                        {t("modal.noContent")}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {t("modal.effect")}: {selectedResult.effect_name} |{" "}
-                        {t("modal.status")}: {selectedResult.status}
-                      </p>
-                    </div>
-                  ) : selectedResult.effect_name === "chat-with-images" ? (
-                    <div className="whitespace-pre-wrap text-xs md:text-base">
-                      {selectedResult.url}
-                    </div>
-                  ) : // Check if the URL is a video file (by extension or effect name)
-                  selectedResult.url.endsWith(".mp4") ||
-                    selectedResult.url.endsWith(".webm") ||
-                    selectedResult.url.endsWith(".mov") ||
-                    selectedResult.effect_name === "ai-kissing-video" ||
-                    selectedResult.effect_name === "text-to-video" ||
-                    selectedResult.effect_name === "ai-dancing" ||
-                    selectedResult.effect_name.includes("video") ||
-                    selectedResult.effect_name.includes("dance") ? (
-                    <video
-                      src={selectedResult.url}
-                      className="w-full h-auto rounded-lg shadow-lg"
-                      controls
-                      onError={(e) => {
-                        console.error("Video load error:", e);
-                        console.error("Video URL:", selectedResult.url);
-                      }}
-                    />
-                  ) : (
-                    <img
-                      src={selectedResult.url}
-                      alt="Result"
-                      className="w-full h-auto rounded-lg shadow-lg"
-                      loading="lazy"
-                      onError={(e) => {
-                        console.error("Image load error:", e);
-                        console.error("Image URL:", selectedResult.url);
-                      }}
-                    />
-                  )}
-                </div>
+          <ModalContent>
+            {(onClose) => (
+              <ModalBody className="p-6">
+                {selectedResult?.url && (
+                  <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                    {selectedResult.url.match(/\.(mp4|webm|mov)/) || selectedResult.effect_name.includes('video') ? (
+                      <video src={selectedResult.url} controls autoPlay className="w-full h-auto" />
+                    ) : (
+                      <img src={selectedResult.url} alt="Result" className="w-full h-auto" />
+                    )}
+                  </div>
+                )}
               </ModalBody>
             )}
           </ModalContent>
